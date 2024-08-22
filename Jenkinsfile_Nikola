@@ -1,0 +1,63 @@
+pipeline {
+    agent any
+
+    environment {
+        DIRECTORY_PATH = 'C:/ProgramData/Jenkins/.jenkins/jobs/Pipeline_5.1P'
+        TESTING_ENVIRONMENT = 'Automate Continuous Delivery Test'
+        PRODUCTION_ENVIRONMENT = 'Nikola Krcevinac' 
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                script {
+                    echo "Fetch source code from the directory path specified by the environment variable: $DIRECTORY_PATH"
+                    echo "Compile the code and generate any necessary artifacts"
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    echo "Unit Tests"
+                    echo "Integration Tests"
+                }
+            }
+        }
+
+        stage('Code') {
+            steps {
+                script {
+                    echo "Check the quality of the code"
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    echo "Deploy the application to a testing environment specified at: $TESTING_ENVIRONMENT"
+                }
+            }
+        }
+
+        stage('Approval') {
+            steps {
+                script {
+                    echo "Waiting for manual approval..."
+                    sleep(time: 10, unit: 'SECONDS')
+                    echo "Approval granted, proceeding to production deployment"
+                }
+            }
+        }
+
+        stage('Deploy to Production') {
+            steps {
+                script {
+                    echo "Deploy the code to the production environment: $PRODUCTION_ENVIRONMENT"
+                }
+            }
+        }
+    }
+}
