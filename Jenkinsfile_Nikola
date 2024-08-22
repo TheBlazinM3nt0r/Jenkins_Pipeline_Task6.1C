@@ -54,36 +54,20 @@ pipeline {
     }
     
     post {
-        stage('Unit and Integration Tests') {
-            success {
-                mail to: 'nicholaskrcevinac@gmail.com',
-                     subject: "Unit and Integration Tests Success",
-                     body: "The Unit and Integration Tests stage completed successfully. Check Jenkins for more details.",
-                     attachLog: true
-            }
-            failure {
-                mail to: 'nicholaskrcevinac@gmail.com',
-                     subject: "Unit and Integration Tests Failure",
-                     body: "The Unit and Integration Tests stage failed. Please check Jenkins for more details.",
-                     attachLog: true
-            }
+        success {
+            mail to: 'nicholaskrcevinac@gmail.com',
+                 subject: "Pipeline Success: ${currentBuild.fullDisplayName}",
+                 body: "The pipeline has completed successfully. Check Jenkins for more details."
         }
-    }
-
-    post {
-        stage('Security Scan') {
-            success {
-                mail to: 'nicholaskrcevinac@gmail.com',
-                     subject: "Security Scan Success",
-                     body: "The Security Scan stage completed successfully. Check Jenkins for more details.",
-                     attachLog: true
-            }
-            failure {
-                mail to: 'nicholaskrcevinac@gmail.com',
-                     subject: "Security Scan Failure",
-                     body: "The Security Scan stage failed. Check Jenkins for more details.",
-                     attachLog: true
-            }
+        failure {
+            mail to: 'nicholaskrcevinac@gmail.com',
+                 subject: "Pipeline Failed: ${currentBuild.fullDisplayName}",
+                 body: "The pipeline has failed. Please check Jenkins for more details."
+        }
+        always {
+            mail to: 'nicholaskrcevinac@gmail.com',
+                 subject: "Pipeline Status: ${currentBuild.fullDisplayName}",
+                 body: "The pipeline has completed with status: ${currentBuild.result}. Check Jenkins for more details."
         }
     }
 }
