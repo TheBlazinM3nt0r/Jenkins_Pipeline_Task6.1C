@@ -1,15 +1,10 @@
 pipeline {
     agent any
 
-    environment {
-        unitTestSuccess = false
-        securityScanSuccess = false
-    }
-
     stages {
         stage('Build') {
             steps {
-                echo 'Building the application..'
+                echo 'Building the application...'
                 // Specify the build tool
                 echo 'Using Maven to compile and package the code'
             }
@@ -19,9 +14,6 @@ pipeline {
                 echo 'Running Unit Integration Test...'
                 // Specify the testing tools
                 echo 'Using JUnit for unit tests and TestNG for integration tests'
-                script {
-                    unitTestSuccess = true
-                }
             }
         }
         stage('Code Analysis') {
@@ -36,9 +28,6 @@ pipeline {
                 echo 'Performing security scan...'
                 // Specify the security scanning tool
                 echo 'Using OWASP Dependency-Check as the tool for vulnerability check'
-                script {
-                    securityScanSuccess = true
-                }
             }
         }
         stage('Deploy to Staging') {
@@ -63,42 +52,22 @@ pipeline {
             }
         }
     }
-
+    
     post {
+        success {
+            mail to: 'nicholaskrcevinac@gmail.com',
+                 subject: "Pipeline Success: ${currentBuild.fullDisplayName}",
+                 body: "Pipeline has completed successfully. Check Jenkins for more details."
+        }
+        failure {
+            mail to: 'nicholaskrcevinac@gmail.com',
+                 subject: "Pipeline Failed: ${currentBuild.fullDisplayName}",
+                 body: "The pipeline has failed. Jenkins for more details."
+        }
         always {
-            script {
-                if (unitTestSuccess) {
-                    emailext(
-                        to: 'nicholaskrcevinac@gmail.com',
-                        subject: "Unit and Integration Test Success",
-                        body: "The Unit and Integration Test stage has completed successfully.",
-                        attachLog: true
-                    )
-                } else {
-                    emailext(
-                        to: 'nicholaskrcevinac@gmail.com',
-                        subject: "Unit and Integration Test Failure",
-                        body: "The Unit and Integration Test stage has failed. Please check the attached logs for details.",
-                        attachLog: true
-                    )
-                }
-
-                if (securityScanSuccess) {
-                    emailext(
-                        to: 'nicholaskrcevinac@gmail.com',
-                        subject: "Security Scan Success",
-                        body: "The Security Scan stage has completed successfully.",
-                        attachLog: true
-                    )
-                } else {
-                    emailext(
-                        to: 'nicholaskrcevinac@gmail.com',
-                        subject: "Security Scan Failure",
-                        body: "The Security Scan stage has failed. Please check the attached logs for details.",
-                        attachLog: true
-                    )
-                }
-            }
+            mail to: 'nicholaskrcevinac@gmail.com',
+                 subject: "Pipeline Status: ${currentBuild.fullDisplayName}",
+                 body: "Pipeline has completed with status: ${currentBuild.result}. Check Jenkins for more details."
         }
     }
 }
