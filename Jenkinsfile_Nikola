@@ -15,6 +15,24 @@ pipeline {
                 // Specify the testing tools
                 echo 'Using JUnit for unit tests and TestNG for integration tests'
             }
+            post {
+                success {
+                    emailext(
+                        to: 'nicholaskrcevinac@gmail.com',
+                        subject: "Unit and Integration Tests Success: ${currentBuild.fullDisplayName}",
+                        body: "The Unit and Integration Tests stage has completed successfully.",
+                        attachLog: true, compressLog: true
+                    )
+                }
+                failure {
+                    emailext(
+                        to: 'nicholaskrcevinac@gmail.com',
+                        subject: "Unit and Integration Tests Failure: ${currentBuild.fullDisplayName}",
+                        body: "The Unit and Integration Tests stage failed. Check the attached logs for details.",
+                        attachLog: true, compressLog: true
+                    )
+                }
+            }
         }
         stage('Code Analysis') {
             steps {
@@ -28,6 +46,24 @@ pipeline {
                 echo 'Performing security scan...'
                 // Specify the security scanning tool
                 echo 'Using OWASP Dependency-Check as the tool for vulnerability check'
+            }
+            post {
+                success {
+                    emailext(
+                        to: 'nicholaskrcevinac@gmail.com',
+                        subject: "Security Scan Success: ${currentBuild.fullDisplayName}",
+                        body: "The Security Scan stage was success.",
+                        attachLog: true, compressLog: true
+                    )
+                }
+                failure {
+                    emailext(
+                        to: 'nicholaskrcevinac@gmail.com',
+                        subject: "Security Scan Failure: ${currentBuild.fullDisplayName}",
+                        body: "The Security Scan stage failed. Check the attached logs for details.",
+                        attachLog: true, compressLog: true
+                    )
+                }
             }
         }
         stage('Deploy to Staging') {
@@ -50,24 +86,6 @@ pipeline {
                 // Specify the deployment server or tool
                 echo 'Deploying to Azure VM instance'
             }
-        }
-    }
-    
-    post {
-        success {
-            mail to: 'nicholaskrcevinac@gmail.com',
-                 subject: "Pipeline Success: ${currentBuild.fullDisplayName}",
-                 body: "Pipeline has completed successfully. Check Jenkins for more details."
-        }
-        failure {
-            mail to: 'nicholaskrcevinac@gmail.com',
-                 subject: "Pipeline Failed: ${currentBuild.fullDisplayName}",
-                 body: "The pipeline has failed. Jenkins for more details."
-        }
-        always {
-            mail to: 'nicholaskrcevinac@gmail.com',
-                 subject: "Pipeline Status: ${currentBuild.fullDisplayName}",
-                 body: "Pipeline has completed with status: ${currentBuild.result}. Check Jenkins for more details."
         }
     }
 }
