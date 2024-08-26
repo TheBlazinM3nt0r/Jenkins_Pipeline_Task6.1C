@@ -17,13 +17,13 @@ pipeline {
             }
             post {
                 success {
-                    emailext to: 'nicholaskrcevinac@gmail.com',
+                    mail to: 'nicholaskrcevinac@gmail.com',
                         subject: "Unit and Integration Tests Success: ${currentBuild.fullDisplayName}",
                         body: "The Unit and Integration Tests stage has completed successfully.",
                         attachLog: true, compressLog: true
                 }
                 failure {
-                    emailext to: 'nicholaskrcevinac@gmail.com',
+                    mail to: 'nicholaskrcevinac@gmail.com',
                         subject: "Unit and Integration Tests Failure: ${currentBuild.fullDisplayName}",
                         body: "The Unit and Integration Tests stage failed. Check the attached logs for details.", 
                         attachLog: true, compressLog: true
@@ -45,13 +45,13 @@ pipeline {
             }
             post {
                 success {
-                    emailext to: 'nicholaskrcevinac@gmail.com',
+                    mail to: 'nicholaskrcevinac@gmail.com',
                         subject: "Security Scan Success: ${currentBuild.fullDisplayName}",
                         body: "The Security Scan stage was successful.",
                         attachLog: true, compressLog: true
                 }
                 failure {
-                    emailext to: 'nicholaskrcevinac@gmail.com',
+                    mail to: 'nicholaskrcevinac@gmail.com',
                         subject: "Security Scan Failure: ${currentBuild.fullDisplayName}",
                         body: "The Security Scan stage failed. Check the attached logs for details.",
                         attachLog: true, compressLog: true
@@ -84,7 +84,7 @@ pipeline {
     post {
         always {
             echo 'Final Email Notification'
-            emailext to: 'nicholaskrcevinac@gmail.com',
+            mail to: 'nicholaskrcevinac@gmail.com',
                 subject: "Pipeline Finished: ${currentBuild.fullDisplayName}",
                 body: "Check console ouput: ${env.BUILD_URL}"
         }
