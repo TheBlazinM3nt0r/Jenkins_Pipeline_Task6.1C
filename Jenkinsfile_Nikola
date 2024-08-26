@@ -52,7 +52,7 @@ pipeline {
                     emailext(
                         to: 'nicholaskrcevinac@gmail.com',
                         subject: "Security Scan Success: ${currentBuild.fullDisplayName}",
-                        body: "The Security Scan stage was success.",
+                        body: "The Security Scan stage was successful.",
                         attachLog: true, compressLog: true
                     )
                 }
@@ -86,6 +86,16 @@ pipeline {
                 // Specify the deployment server or tool
                 echo 'Deploying to Azure VM instance'
             }
+        }
+    }
+    
+    post {
+        always {
+            emailext(
+                to: 'nicholaskrcevinac@gmail.com',
+                subject: "Pipeline Status: ${currentBuild.fullDisplayName}",
+                body: "Pipeline has completed with status: ${currentBuild.result}. Check Jenkins for more details.",
+            )
         }
     }
 }
